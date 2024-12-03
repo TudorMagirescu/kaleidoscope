@@ -6,7 +6,7 @@ int main(int argc, char* argv[]) {
     Lexer lexer{filename};
 
     std::unique_ptr<Token> nextToken = lexer.getNextToken();
-    while(nextToken->to_string() != "<EOF>") {
+    while(!nextToken->isEof()) {
         std::cout << nextToken->to_string() << '\n';
         nextToken = lexer.getNextToken();
     }

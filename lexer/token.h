@@ -3,6 +3,7 @@
 class Token {
     public:
         virtual std::string to_string()=0;
+        virtual bool isEof() { return false; }
 };
 
 class NumToken : public Token {
@@ -37,4 +38,5 @@ class IdToken : public Token {
 class EofToken : public Token {
     public:
         std::string to_string() override;
+        bool isEof() override { return true; }
 };
