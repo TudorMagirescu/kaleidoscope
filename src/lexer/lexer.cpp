@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "lexer/lexer.h"
 
 std::unique_ptr<Token> Lexer::parseNumToken() {
     std::string tokenValue;

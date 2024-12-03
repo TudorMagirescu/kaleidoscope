@@ -1,4 +1,4 @@
-#include "input_reader.h"
+#include "lexer/input_reader.h"
 
 InputReader::InputReader(std::string filename) {
     cachedCharacter = '\0';

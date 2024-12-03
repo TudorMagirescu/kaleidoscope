@@ -1,1 +1,0 @@
-add_library(lexer lexer.cpp token.cpp input_reader.cpp)

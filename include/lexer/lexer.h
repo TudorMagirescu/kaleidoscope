@@ -1,6 +1,8 @@
+#pragma once
+
 #include <memory>
 #include "token.h"
-#include "input_reader.h"
+#include "lexer/input_reader.h"
 
 class Lexer {
 

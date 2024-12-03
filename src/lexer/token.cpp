@@ -1,4 +1,4 @@
-#include "token.h"
+#include "lexer/token.h"
 
 std::string NumToken::to_string() {
     return std::string("<")
