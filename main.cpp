@@ -3,7 +3,8 @@
 
 int main(int argc, char* argv[]) {
     std::string filename = std::string(KALEIDOSCOPE_EXAMPLES_DIR) + "/example.kl";
-    Lexer lexer{filename};
+    std::unique_ptr<InputReader> reader = std::make_unique<InputReader>(filename);
+    Lexer lexer{std::move(reader)};
 
     std::unique_ptr<Token> nextToken = lexer.getNextToken();
     while(!nextToken->isEof()) {

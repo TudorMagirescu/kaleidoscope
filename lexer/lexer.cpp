@@ -1,43 +1,26 @@
 #include "lexer.h"
 
-Lexer::Lexer(std::string filename) {
-    cachedCharacter = '\0';
-    in = std::ifstream(filename);
-}
-
-char Lexer::peekNextCharacter() {
-    if (!cachedCharacter) {
-        cachedCharacter = in.get();
-    }
-
-    return cachedCharacter;
-}
-
-void Lexer::consumePeekedCharacter() {
-    cachedCharacter = '\0';
-}
-
 std::unique_ptr<Token> Lexer::parseNumToken() {
     std::string tokenValue;
-    char peekedCharacter = peekNextCharacter();
+    char peekedCharacter = reader->peekNextCharacter();
     
     while (isdigit(peekedCharacter) || peekedCharacter == '.') {
         tokenValue += peekedCharacter;
 
-        consumePeekedCharacter();
-        peekedCharacter = peekNextCharacter();
+        reader->consumePeekedCharacter();
+        peekedCharacter = reader->peekNextCharacter();
     }
 
     return std::make_unique<NumToken>(std::stod(tokenValue));
 }
 
 std::unique_ptr<Token> Lexer::createSpecialCharacterToken(IdTokenType type, std::string symbol) {
-    consumePeekedCharacter();
+    reader->consumePeekedCharacter();
     return std::make_unique<IdToken>(type, symbol);
 }
 
 std::unique_ptr<Token> Lexer::parseIdToken() {
-    char peekedCharacter = peekNextCharacter();
+    char peekedCharacter = reader->peekNextCharacter();
 
     // Check if it's a special character.
     switch (peekedCharacter) {
@@ -61,8 +44,8 @@ std::unique_ptr<Token> Lexer::parseIdToken() {
     while (isalnum(peekedCharacter) || peekedCharacter == '_') {
         tokenValue += peekedCharacter;
 
-        consumePeekedCharacter();
-        peekedCharacter = peekNextCharacter();
+        reader->consumePeekedCharacter();
+        peekedCharacter = reader->peekNextCharacter();
     }
 
     if (tokenValue == "def") return std::make_unique<IdToken>(IdTokenType::DEF, "DEF");
@@ -71,12 +54,12 @@ std::unique_ptr<Token> Lexer::parseIdToken() {
 }
 
 std::unique_ptr<Token> Lexer::getNextToken() {
-    char peekedCharacter = peekNextCharacter();
+    char peekedCharacter = reader->peekNextCharacter();
 
     // Skip whitespace.
     while (isspace(peekedCharacter)) {
-        consumePeekedCharacter();
-        peekedCharacter = peekNextCharacter();
+        reader->consumePeekedCharacter();
+        peekedCharacter = reader->peekNextCharacter();
     }
 
     // Check whether to parse number token.
