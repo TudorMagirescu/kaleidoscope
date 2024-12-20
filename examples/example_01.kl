@@ -1,0 +1,4 @@
+def identity(x)
+  x
+
+identity(x)

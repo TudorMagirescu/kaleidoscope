@@ -1,6 +1,6 @@
 #pragma once
 
-#include "parser/expr_ast.h"
+#include "parser/node_ast.h"
 #include "lexer/lexer.h"
 #include "lexer/token.h"
 #include <memory>
@@ -12,5 +12,5 @@ class Parser {
 
     public:
         Parser(std::unique_ptr<Lexer> lexer): lexer(std::move(lexer)) {};
-        std::unique_ptr<ExprAST> parseExpr();
+        std::unique_ptr<NodeAST> parse();
 };

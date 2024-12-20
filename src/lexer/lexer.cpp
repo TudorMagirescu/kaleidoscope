@@ -39,9 +39,9 @@ std::unique_ptr<Token> Lexer::parseIdToken() {
     }
 
     // Parse the next identifier. The structure of an identifier can be defined by the following
-    // regular expression: [a-zA-Z_][a-zA-Z0-9_]*.
+    // regular expression: [a-zA-Z][a-zA-Z0-9]*.
     std::string tokenValue;
-    while (isalnum(peekedCharacter) || peekedCharacter == '_') {
+    while (isalnum(peekedCharacter)) {
         tokenValue += peekedCharacter;
 
         reader->consumePeekedCharacter();
