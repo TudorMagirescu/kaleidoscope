@@ -14,28 +14,13 @@ std::unique_ptr<Token> Lexer::parseNumToken() {
     return std::make_unique<NumToken>(std::stod(tokenValue));
 }
 
-std::unique_ptr<Token> Lexer::createSpecialCharacterToken(IdTokenType type, std::string symbol) {
-    reader->consumePeekedCharacter();
-    return std::make_unique<IdToken>(type, symbol);
-}
-
 std::unique_ptr<Token> Lexer::parseIdToken() {
     char peekedCharacter = reader->peekNextCharacter();
 
     // Check if it's a special character.
-    switch (peekedCharacter) {
-        case '+':
-            return createSpecialCharacterToken(IdTokenType::PLUS, "+");
-        case '-':
-            return createSpecialCharacterToken(IdTokenType::MINUS, "-");
-        case '*':
-            return createSpecialCharacterToken(IdTokenType::MULTIPLICATION, "*");
-        case '/':
-            return createSpecialCharacterToken(IdTokenType::DIVISION, "/");
-        case '(':
-            return createSpecialCharacterToken(IdTokenType::LEFT_PARANTHESIS, "(");
-        case ')':
-            return createSpecialCharacterToken(IdTokenType::RIGHT_PARANTHESIS, ")");
+    if (!isalnum(peekedCharacter)) {
+        reader->consumePeekedCharacter();
+        return std::make_unique<IdToken>(std::string(1, peekedCharacter));
     }
 
     // Parse the next identifier. The structure of an identifier can be defined by the following
@@ -43,14 +28,11 @@ std::unique_ptr<Token> Lexer::parseIdToken() {
     std::string tokenValue;
     while (isalnum(peekedCharacter)) {
         tokenValue += peekedCharacter;
-
         reader->consumePeekedCharacter();
         peekedCharacter = reader->peekNextCharacter();
     }
 
-    if (tokenValue == "def") return std::make_unique<IdToken>(IdTokenType::DEF, "DEF");
-    if (tokenValue == "extern") return std::make_unique<IdToken>(IdTokenType::EXTERN, "EXTERN");
-    return std::make_unique<IdToken>(IdTokenType::USER_DEFINED, tokenValue);
+    return std::make_unique<IdToken>(tokenValue);
 }
 
 std::unique_ptr<Token> Lexer::getNextToken() {

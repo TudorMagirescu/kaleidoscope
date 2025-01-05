@@ -7,7 +7,7 @@ int main(int argc, char* argv[]) {
     ////////////////
     // LEXER TEST //
     ////////////////
-    std::string filename = std::string(KALEIDOSCOPE_EXAMPLES_DIR) + "/example_01.kl";
+    std::string filename = std::string(KALEIDOSCOPE_EXAMPLES_DIR) + "/example_00.kl";
     std::unique_ptr<InputReader> reader = std::make_unique<InputReader>(filename);
     Lexer lexer{std::move(reader)};
 

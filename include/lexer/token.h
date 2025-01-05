@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
 
 class Token {
     public:
@@ -25,15 +26,25 @@ enum class IdTokenType{
     DIVISION,
     LEFT_PARANTHESIS,
     RIGHT_PARANTHESIS,
+    LEFT_CURLY_BRACKET,
+    RIGHT_CURLY_BRACKET,
     USER_DEFINED,
+    COMMA,
+    SEMICOLON,
+    UNKNOWN,
 };
 
 class IdToken : public Token {
+    private:
+        IdToken(std::string id, IdTokenType type): id(id), type(type) {}; 
+        static std::unordered_map<std::string, IdToken> stringToIdToken;
+
     public:
         IdTokenType type;
         std::string id;
 
-        IdToken(IdTokenType type, std::string id): type(type), id(id) {};
+        IdToken(): id(""), type(IdTokenType::UNKNOWN) {};
+        IdToken(std::string id);
         std::string to_string() override;
 };
 
