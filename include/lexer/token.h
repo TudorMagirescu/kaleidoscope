@@ -3,20 +3,6 @@
 #include <string>
 #include <unordered_map>
 
-class Token {
-    public:
-        virtual std::string to_string()=0;
-        virtual bool isEof() { return false; }
-};
-
-class NumToken : public Token {
-    public:
-        double value;
-
-        NumToken(double value): value(value) {};
-        std::string to_string() override;
-};
-
 enum class IdTokenType{
     DEF,
     EXTERN,
@@ -34,6 +20,24 @@ enum class IdTokenType{
     UNKNOWN,
 };
 
+class Token {
+    public:
+        virtual std::string to_string()=0;
+        virtual bool isEof() { return false; }
+        virtual bool isNum() { return false; }
+        virtual bool isId() { return false; }
+        virtual bool isId(IdTokenType type) { return false; }
+};
+
+class NumToken : public Token {
+    public:
+        double value;
+
+        NumToken(double value): value(value) {};
+        std::string to_string() override;
+        bool isNum() override { return true; }
+};
+
 class IdToken : public Token {
     private:
         IdToken(std::string id, IdTokenType type): id(id), type(type) {}; 
@@ -46,6 +50,8 @@ class IdToken : public Token {
         IdToken(): id(""), type(IdTokenType::UNKNOWN) {};
         IdToken(std::string id);
         std::string to_string() override;
+        bool isId() override { return true; }
+        bool isId(IdTokenType type) override { return this->type == type; }
 };
 
 class EofToken : public Token {

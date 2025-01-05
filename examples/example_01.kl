@@ -1,4 +1,14 @@
-def identity(x)
-  x
+def supply1() {
+  1
+};
 
-identity(x)
+def identity(x) {
+  x
+};
+
+identity(supply1());
+supply1();
+
+extern sin(angle);
+
+sin(90)
