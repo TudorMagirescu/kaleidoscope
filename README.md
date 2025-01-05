@@ -11,14 +11,16 @@ $stmt$ $\rightarrow$ $expr$\
 $stmt$ $\rightarrow$ $funcDef$\
 $stmt$ $\rightarrow$ $externDef$
 
-$funcDef$ $\rightarrow$ **def** $funcSign$ $expr$\
+$funcDef$ $\rightarrow$ **def** $funcSign$ { $expr$ }\
 $externDef$ $\rightarrow$ **extern** $funcSign$\
-$funcSign$ $\rightarrow$ $id$**(**$id^*$**)**
+$funcSign$ $\rightarrow$ $id$**(**$idList$**)**
 
 $expr$ $\rightarrow$ $num$\
-$expr$ $\rightarrow$ $id$\
-$expr$ $\rightarrow$ $callExpr$\
-$callExpr$ $\rightarrow$ $id$**(**$expr^*$**)**
+$expr$ $\rightarrow$ $idExpr$\
+$idExpr$ $\rightarrow$ $callExpr$ | $id$\
+$callExpr$ $\rightarrow$ $id$**(**$exprList$**)**\
+$exprList$ $\rightarrow$ $expr$**,**$exprList$ | $\epsilon$
 
 $num$ $\rightarrow$ $[0-9]^*.[0-9]^*$\
-$id$ $\rightarrow$ $[a-zA-Z][a-zA-Z0-9]^*$
+$id$ $\rightarrow$ $[a-zA-Z][a-zA-Z0-9]^*$\
+$idList$ $\rightarrow$ $id$**,**$idList$ | $\epsilon$

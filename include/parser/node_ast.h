@@ -9,7 +9,6 @@ class NodeAST {
         std::string indent(int depth) { return std::string(depth, '\t'); }
 
     public:
-        
         virtual std::string prettyPrint(int depth)=0;
         std::string prettyPrint() { return prettyPrint(0); }
         virtual ~NodeAST() = default;
@@ -62,7 +61,7 @@ class FuncSignAST : public NodeAST {
         std::vector<std::string> params;
 
     public:
-        FuncSignAST(std::string id, std::vector<std::string> params): id(id), params(std::move(params)) {}
+        FuncSignAST(std::string id, std::vector<std::string> params): id(std::move(id)), params(std::move(params)) {}
         std::string prettyPrint(int depth) override;
 };
 
