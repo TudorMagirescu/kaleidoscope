@@ -1,14 +1,14 @@
 def supply1() {
-  1
+  1.0
 };
 
-def identity(x) {
+def pickfirst(x, y) {
   x
 };
 
-identity(supply1());
+pickfirst(supply1(), 2);
 supply1();
 
 extern sin(angle);
 
-sin(90)
+sin(90);

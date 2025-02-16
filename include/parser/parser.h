@@ -9,6 +9,9 @@ class Parser {
     private:
         std::unique_ptr<Lexer> lexer;
         std::unique_ptr<Token> currentToken;
+        std::unique_ptr<NodeAST> AST;
+        std::string error;
+
         void getNextToken();
         
         std::unique_ptr<RootAST> parseRoot();
@@ -22,5 +25,7 @@ class Parser {
 
     public:
         Parser(std::unique_ptr<Lexer> lexer): lexer(std::move(lexer)) {};
-        std::unique_ptr<NodeAST> parse();
+        bool parse();
+        const NodeAST& getAST() const { return *AST; };
+        const std::string& getError() const { return error; };
 };

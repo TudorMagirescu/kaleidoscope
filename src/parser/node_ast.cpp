@@ -1,6 +1,6 @@
 #include "parser/node_ast.h"
 
-std::string RootAST::prettyPrint(int depth) {
+std::string RootAST::prettyPrint(int depth) const {
     std::string prettyString = "";
     const size_t stmtsCount = stmts.size();
 
@@ -14,15 +14,15 @@ std::string RootAST::prettyPrint(int depth) {
     return prettyString;
 }
 
-std::string NumAST::prettyPrint(int depth) {
+std::string NumAST::prettyPrint(int depth) const {
     return indent(depth) + std::string("NumAST(val=") + std::to_string(val) + ")";
 }
 
-std::string IdAST::prettyPrint(int depth) {
+std::string IdAST::prettyPrint(int depth) const {
     return indent(depth) + std::string("IdAST(id=") + id + ")";
 }
 
-std::string CallAST::prettyPrint(int depth) {
+std::string CallAST::prettyPrint(int depth) const {
     std::string prettyString = indent(depth) + std::string("CallAST(id=") + id + ")";
     const size_t argsCount = args.size();
 
@@ -33,7 +33,7 @@ std::string CallAST::prettyPrint(int depth) {
     return prettyString;
 }
 
-std::string FuncSignAST::prettyPrint(int depth) {
+std::string FuncSignAST::prettyPrint(int depth) const {
     std::string prettyString = indent(depth) + std::string("FuncSignAST(id=") + id;
 
     std::size_t paramIndex = 0;
@@ -46,13 +46,13 @@ std::string FuncSignAST::prettyPrint(int depth) {
     return prettyString;
 }
 
-std::string FuncDefAST::prettyPrint(int depth) {
+std::string FuncDefAST::prettyPrint(int depth) const {
     return indent(depth) + std::string("FuncDefAST") + '\n'
         + funcSign->prettyPrint(depth + 1) + '\n' 
         + body->prettyPrint(depth + 1);
 }
 
-std::string ExternDefAST::prettyPrint(int depth) {
+std::string ExternDefAST::prettyPrint(int depth) const {
     return indent(depth) + std::string("ExternDefAST") + '\n'
         + funcSign->prettyPrint(depth + 1);
 }

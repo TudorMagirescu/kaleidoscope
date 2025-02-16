@@ -24,8 +24,12 @@ int main(int argc, char* argv[]) {
     filename = std::string(KALEIDOSCOPE_EXAMPLES_DIR) + "/example_01.kl";
     reader = std::make_unique<InputReader>(filename);
     std::unique_ptr<Lexer> lexerPtr = std::make_unique<Lexer>(std::move(reader));
-    std::unique_ptr<NodeAST> root = Parser(std::move(lexerPtr)).parse();
+    Parser parser{std::move(lexerPtr)};
 
-    std::cout << root->prettyPrint() << '\n';
+    if (parser.parse()) {
+        std::cout << parser.getAST().prettyPrint() << '\n';
+    } else {
+        std::cout << parser.getError() << '\n';
+    }
     return 0;
 }

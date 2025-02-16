@@ -6,11 +6,11 @@
 
 class NodeAST {
     protected:
-        std::string indent(int depth) { return std::string(depth, '\t'); }
+        std::string indent(int depth) const { return std::string(depth, '\t'); }
 
     public:
-        virtual std::string prettyPrint(int depth)=0;
-        std::string prettyPrint() { return prettyPrint(0); }
+        virtual std::string prettyPrint(int depth) const = 0;
+        std::string prettyPrint() const { return prettyPrint(0); }
         virtual ~NodeAST() = default;
 };
 
@@ -22,7 +22,7 @@ class RootAST : public NodeAST {
 
     public:
         RootAST(std::vector<std::unique_ptr<StmtAST>> stmts): stmts(std::move(stmts)) {}
-        std::string prettyPrint(int depth) override;
+        std::string prettyPrint(int depth) const override;
 };
 
 class ExprAST : public StmtAST {};
@@ -33,7 +33,7 @@ class NumAST : public ExprAST {
 
     public:
         NumAST(const double val): val(val) {}
-        std::string prettyPrint(int depth) override;
+        std::string prettyPrint(int depth) const override;
 };
 
 class IdAST : public ExprAST {
@@ -42,7 +42,7 @@ class IdAST : public ExprAST {
 
     public:
         IdAST(std::string id): id(std::move(id)) {}
-        std::string prettyPrint(int depth) override;
+        std::string prettyPrint(int depth) const override;
 };
 
 class CallAST : public ExprAST {
@@ -52,7 +52,7 @@ class CallAST : public ExprAST {
     
     public:
         CallAST(const std::string id, std::vector<std::unique_ptr<ExprAST>> args): id(id), args(std::move(args)) {}
-        std::string prettyPrint(int depth) override;
+        std::string prettyPrint(int depth) const override;
 };
 
 class FuncSignAST : public NodeAST {
@@ -62,7 +62,7 @@ class FuncSignAST : public NodeAST {
 
     public:
         FuncSignAST(std::string id, std::vector<std::string> params): id(std::move(id)), params(std::move(params)) {}
-        std::string prettyPrint(int depth) override;
+        std::string prettyPrint(int depth) const override;
 };
 
 class FuncDefAST : public StmtAST {
@@ -72,7 +72,7 @@ class FuncDefAST : public StmtAST {
 
     public:
         FuncDefAST(std::unique_ptr<FuncSignAST> funcSign, std::unique_ptr<ExprAST> body) : funcSign(std::move(funcSign)), body(std::move(body)) {}
-        std::string prettyPrint(int depth) override;
+        std::string prettyPrint(int depth) const override;
 };
 
 class ExternDefAST : public StmtAST {
@@ -81,5 +81,5 @@ class ExternDefAST : public StmtAST {
 
     public:
         ExternDefAST(std::unique_ptr<FuncSignAST> funcSign): funcSign(std::move(funcSign)) {}
-        std::string prettyPrint(int depth) override;
+        std::string prettyPrint(int depth) const override;
 };

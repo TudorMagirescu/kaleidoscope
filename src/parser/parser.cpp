@@ -1,9 +1,17 @@
 #include "parser/parser.h"
 #include "parser/parser_error.h"
 
-std::unique_ptr<NodeAST> Parser::parse() {
+bool Parser::parse() {
+    // Load the first token.
     getNextToken();
-    return parseRoot();
+
+    try {
+        AST = std::move(parseRoot());
+        return true;
+    } catch (ParserError& e) {
+        error = "Error: " + std::string(e.what());
+        return false;
+    }
 }
 
 void Parser::getNextToken() {
@@ -18,7 +26,7 @@ std::unique_ptr<RootAST> Parser::parseRoot() {
 
         // We expect a `;` between statements.
         if (!currentToken->isId(IdTokenType::SEMICOLON)) {
-            // TODO: throw a parser exception.
+            throw ParserError("Expected ';' at the end of the statement.");
         }
 
         getNextToken(); // Eat the ';' 
@@ -48,7 +56,7 @@ std::unique_ptr<ExprAST> Parser::parseExpr() {
         return parseNum();
     }
 
-    // TODO: throw a parser exception.
+    throw ParserError("Invalid expression.");
 }
 
 std::unique_ptr<ExprAST> Parser::parseIdExpr() {
@@ -56,7 +64,7 @@ std::unique_ptr<ExprAST> Parser::parseIdExpr() {
     {
         // We know the current token has type `std::unique_ptr<IdToken>`.
         IdToken* idToken = static_cast<IdToken*>(currentToken.get());
-        id = idToken->id; 
+        id = idToken->id;
     }
 
     getNextToken(); // Eat the user-defined identifier.
@@ -69,20 +77,24 @@ std::unique_ptr<ExprAST> Parser::parseIdExpr() {
     getNextToken(); // Eat the '('
 
     std::vector<std::unique_ptr<ExprAST>> args;
-    while (!currentToken->isId(IdTokenType::RIGHT_PARANTHESIS)) { 
-        args.push_back(parseExpr());
+    
+    // Handle function calls with >0 arguments.
+    if (!currentToken->isId(IdTokenType::RIGHT_PARANTHESIS)) {
+        while (true) {
+            args.push_back(parseExpr());
 
-        if (currentToken->isId(IdTokenType::RIGHT_PARANTHESIS)) {
-            continue;
+            if (currentToken->isId(IdTokenType::RIGHT_PARANTHESIS)) {
+                break;
+            }
+
+            // We expect ',' between function call arguments.
+            if (!currentToken->isId(IdTokenType::COMMA)) {
+                throw ParserError("Expected ',' between function call arguments.");
+            }
+
+            getNextToken(); // Eat the ','.
         }
-
-        // We expect ',' between function call arguments.
-        if (!currentToken->isId(IdTokenType::COMMA)) {
-            // TODO: throw a parser_error.
-        }
-
-        getNextToken(); // Eat the ','.
-    } 
+    }
 
     getNextToken(); // Eat the `)`
 
@@ -95,7 +107,7 @@ std::unique_ptr<NumAST> Parser::parseNum() {
         // We know the current token has type `std::unique_ptr<NumToken`.
         NumToken* numToken = static_cast<NumToken*>(currentToken.get());
         value = numToken->value; 
-    } 
+    }
 
     getNextToken(); // Eat the num token.
 
@@ -104,38 +116,42 @@ std::unique_ptr<NumAST> Parser::parseNum() {
 
 std::unique_ptr<FuncSignAST> Parser::parseFuncSign() {
     if (!currentToken->isId(IdTokenType::USER_DEFINED)) {
-        // TODO: throw a parser error.
+        throw ParserError("Invalid function name token.");
     }
 
     std::string id = static_cast<IdToken*>(currentToken.get())->id;
     getNextToken(); // Eat the user-defined token.
 
     if (!currentToken->isId(IdTokenType::LEFT_PARANTHESIS)) {
-        // TODO: throw a parser error.
+        throw ParserError("Expected '(' after function name.");
     }
 
     getNextToken(); // Eat the `(`
 
     std::vector<std::string> params;
-    while (!currentToken->isId(IdTokenType::RIGHT_PARANTHESIS)) {
-        if (!currentToken->isId(IdTokenType::USER_DEFINED)) {
-            // TODO: throw a parser error.
-        }
 
-        std::string param = static_cast<IdToken*>(currentToken.get())->id;
-        params.push_back(param);
-        getNextToken(); // Eat the user-defined token.
+    // Handle function signatures with >0 parameters.
+    if (!currentToken->isId(IdTokenType::RIGHT_PARANTHESIS)) {
+        while (true) {
+            if (!currentToken->isId(IdTokenType::USER_DEFINED)) {
+                throw ParserError("Invalid function parameter token.");
+            }
 
-        if (currentToken->isId(IdTokenType::RIGHT_PARANTHESIS)) {
-            continue;
-        }
-        
-        // We expect ',' between function parameters.
-        if (!currentToken->isId(IdTokenType::COMMA)) {
-            // TODO: throw a parser error.
-        }
+            std::string param = static_cast<IdToken*>(currentToken.get())->id;
+            params.push_back(param);
+            getNextToken(); // Eat the user-defined token.
 
-        getNextToken(); // Eat the `,`.
+            if (currentToken->isId(IdTokenType::RIGHT_PARANTHESIS)) {
+                break;
+            }
+            
+            // We expect ',' between function parameters.
+            if (!currentToken->isId(IdTokenType::COMMA)) {
+                throw ParserError("Expected ',' or ')' after function parameter.");
+            }
+
+            getNextToken(); // Eat the `,`.
+        }
     }
 
     getNextToken(); // Eat the `)`
@@ -149,7 +165,7 @@ std::unique_ptr<FuncDefAST> Parser::parseFuncDef() {
     std::unique_ptr<FuncSignAST> funcSign = parseFuncSign();
 
     if (!currentToken->isId(IdTokenType::LEFT_CURLY_BRACKET)) {
-        // TODO: throw a parser error.
+        throw ParserError("Expected '{' after function signature.");
     }
     
     getNextToken(); // Eat the `{`
@@ -157,7 +173,7 @@ std::unique_ptr<FuncDefAST> Parser::parseFuncDef() {
     std::unique_ptr<ExprAST> expr = parseExpr();
 
     if (!currentToken->isId(IdTokenType::RIGHT_CURLY_BRACKET)) {
-        // TODO: throw a parser error.
+        throw ParserError("Expected '}' after function body.");
     }
 
     getNextToken(); // Eat the `}`
