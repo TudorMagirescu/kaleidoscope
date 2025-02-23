@@ -7,7 +7,7 @@
 
 class Parser {
     private:
-        std::unique_ptr<Lexer> lexer;
+        Lexer lexer;
         std::unique_ptr<Token> currentToken;
         std::unique_ptr<NodeAST> AST;
         std::string error;
@@ -24,7 +24,7 @@ class Parser {
         std::unique_ptr<ExternDefAST> parseExternDef();
 
     public:
-        Parser(std::unique_ptr<Lexer> lexer): lexer(std::move(lexer)) {};
+        Parser(Lexer&& lexer): lexer(std::move(lexer)) {};
         bool parse();
         const NodeAST& getAST() const { return *AST; };
         const std::string& getError() const { return error; };

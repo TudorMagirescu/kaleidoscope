@@ -16,3 +16,4 @@ add_subdirectory(src)
 # Link the libraries.
 target_link_libraries(kaleidoscope PUBLIC lexer)
 target_link_libraries(kaleidoscope PUBLIC parser)
+target_link_libraries(kaleidoscope PUBLIC repl)

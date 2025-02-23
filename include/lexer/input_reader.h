@@ -1,15 +1,14 @@
 #pragma once
 
 #include <string>
-#include <fstream>
+#include <iostream>
 
 class InputReader {
     private:
-        std::ifstream in;
         char cachedCharacter;
     
     public:
-        InputReader(std::string filename);
+        InputReader();
         char peekNextCharacter();
         void consumePeekedCharacter();
 };

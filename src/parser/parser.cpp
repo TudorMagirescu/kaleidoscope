@@ -15,7 +15,7 @@ bool Parser::parse() {
 }
 
 void Parser::getNextToken() {
-    currentToken = std::move(lexer->getNextToken());
+    currentToken = std::move(lexer.getNextToken());
 }
 
 std::unique_ptr<RootAST> Parser::parseRoot() {

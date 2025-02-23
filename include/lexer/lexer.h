@@ -7,11 +7,11 @@
 class Lexer {
 
     private:
-        std::unique_ptr<InputReader> reader;
+        InputReader reader;
         std::unique_ptr<Token> parseNumToken();
         std::unique_ptr<Token> parseIdToken();
 
     public:
-        Lexer(std::unique_ptr<InputReader> reader): reader(std::move(reader)) {};
+        Lexer(InputReader&& reader): reader(std::move(reader)) {};
         std::unique_ptr<Token> getNextToken();
 };

@@ -1,13 +1,12 @@
 #include "lexer/input_reader.h"
 
-InputReader::InputReader(std::string filename) {
+InputReader::InputReader() {
     cachedCharacter = '\0';
-    in = std::ifstream(filename);
 }
 
 char InputReader::peekNextCharacter() {
     if (!cachedCharacter) {
-        cachedCharacter = in.get();
+        cachedCharacter = std::cin.get();
     }
 
     return cachedCharacter;
