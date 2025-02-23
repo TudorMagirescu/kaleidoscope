@@ -23,7 +23,6 @@ enum class IdTokenType{
 class Token {
     public:
         virtual std::string to_string()=0;
-        virtual bool isEof() { return false; }
         virtual bool isNum() { return false; }
         virtual bool isId() { return false; }
         virtual bool isId(IdTokenType type) { return false; }
@@ -52,10 +51,4 @@ class IdToken : public Token {
         std::string to_string() override;
         bool isId() override { return true; }
         bool isId(IdTokenType type) override { return this->type == type; }
-};
-
-class EofToken : public Token {
-    public:
-        std::string to_string() override;
-        bool isEof() override { return true; }
 };

@@ -49,11 +49,6 @@ std::unique_ptr<Token> Lexer::getNextToken() {
         return parseNumToken();
     }
 
-    // Check whether to parse EofToken.
-    if (peekedCharacter == EOF) {
-        return std::make_unique<EofToken>();
-    }
-
     // Parse IdToken.
     return parseIdToken();
 }

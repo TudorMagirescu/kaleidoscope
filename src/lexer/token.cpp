@@ -38,8 +38,3 @@ std::string IdToken::to_string() {
         + id
         + ">";
 }
-
-std::string EofToken::to_string() {
-    return std::string("<")
-        + "EOF>";
-}
