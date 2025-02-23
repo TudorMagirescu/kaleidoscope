@@ -1,12 +1,13 @@
 #include "parser/parser.h"
 #include "parser/parser_error.h"
 
-bool Parser::parse() {
-    // Load the first token.
-    getNextToken();
+void Parser::getNextToken() {
+    currentToken = std::move(lexer.getNextToken());
+}
 
+bool Parser::parse() {
     try {
-        AST = std::move(parseRoot());
+        AST = std::move(parseStmt());
         return true;
     } catch (ParserError& e) {
         error = "Error: " + std::string(e.what());
@@ -14,37 +15,26 @@ bool Parser::parse() {
     }
 }
 
-void Parser::getNextToken() {
-    currentToken = std::move(lexer.getNextToken());
-}
-
-std::unique_ptr<RootAST> Parser::parseRoot() {
-    std::vector<std::unique_ptr<StmtAST>> stmts;
-    
-    while (!currentToken->isEof()) {
-        stmts.push_back(std::move(parseStmt()));
-
-        // We expect a `;` between statements.
-        if (!currentToken->isId(IdTokenType::SEMICOLON)) {
-            throw ParserError("Expected ';' at the end of the statement.");
-        }
-
-        getNextToken(); // Eat the ';' 
-    }
-
-    return std::make_unique<RootAST>(std::move(stmts));
-}
-
 std::unique_ptr<StmtAST> Parser::parseStmt() {
+    std::unique_ptr<StmtAST> stmt;
+
+    // Load the first token of the statement.
+    getNextToken();
+
     if (currentToken->isId(IdTokenType::DEF)) {
-        return parseFuncDef();
+        stmt = std::move(parseFuncDef());
+    } else if (currentToken->isId(IdTokenType::EXTERN)) {
+        stmt = std::move(parseExternDef());
+    } else {
+        stmt = std::move(parseExpr());
     }
 
-    if (currentToken->isId(IdTokenType::EXTERN)) {
-        return parseExternDef();
+    // We expect a `;` between statements.
+    if (!currentToken->isId(IdTokenType::SEMICOLON)) {
+        throw ParserError("Expected ';' at the end of the statement.");
     }
 
-    return parseExpr();
+    return stmt;
 }
 
 std::unique_ptr<ExprAST> Parser::parseExpr() {

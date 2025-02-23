@@ -1,19 +1,5 @@
 #include "parser/node_ast.h"
 
-std::string RootAST::prettyPrint(int depth) const {
-    std::string prettyString = "";
-    const size_t stmtsCount = stmts.size();
-
-    for (size_t i = 0; i < stmtsCount; i++) {
-        prettyString += stmts[i]->prettyPrint(depth);
-        if (i + 1 < stmtsCount) {
-            prettyString += '\n';
-        } 
-    }
-
-    return prettyString;
-}
-
 std::string NumAST::prettyPrint(int depth) const {
     return indent(depth) + std::string("NumAST(val=") + std::to_string(val) + ")";
 }

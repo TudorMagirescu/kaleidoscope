@@ -14,7 +14,6 @@ class Parser {
 
         void getNextToken();
         
-        std::unique_ptr<RootAST> parseRoot();
         std::unique_ptr<StmtAST> parseStmt();
         std::unique_ptr<ExprAST> parseExpr();
         std::unique_ptr<ExprAST> parseIdExpr();

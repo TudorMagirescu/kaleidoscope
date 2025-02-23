@@ -5,9 +5,10 @@
 
 class Repl {
     private:
+        Parser parser;
+        static Parser createParser();
 
     public:
-        Repl();
+        Repl(): parser(createParser()) {}
         void run();
-
 };

@@ -16,15 +16,6 @@ class NodeAST {
 
 class StmtAST : public NodeAST {};
 
-class RootAST : public NodeAST {
-    private:
-        std::vector<std::unique_ptr<StmtAST>> stmts;
-
-    public:
-        RootAST(std::vector<std::unique_ptr<StmtAST>> stmts): stmts(std::move(stmts)) {}
-        std::string prettyPrint(int depth) const override;
-};
-
 class ExprAST : public StmtAST {};
 
 class NumAST : public ExprAST {
